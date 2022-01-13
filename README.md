@@ -4,6 +4,7 @@ This is a repo where we try to learn how to write a C2 Framework using Rust.
 
 live-streamed on [Twitch](https://twitch.tv/maikroservice)
 
+notes: [Notion](https://maikroservice.notion.site/RustyC2-Write-y-our-own-C2-Framework-in-Rust-64a312444029476baeccd786bdd375fd)
 ## Todos:
 
 
