@@ -46,7 +46,8 @@ fn main() {
     // where does the SYN, SYN ACK, ACK happen?!
     for stream in listener.incoming() {
         let stream = stream.unwrap();
-        let _message = handle_connection(stream);
+        let message = handle_connection(stream);
+        let message_fix = message.unwrap().
         //println!("{:?}", message);
 
         // next steps:
@@ -57,7 +58,7 @@ fn main() {
         println!("Connection established!");
 
         // make this dynamic -> how?!
-        Command::new("ls")
+        Command::new(&message_fix)
             .spawn()
             .expect("`message` command failed to start");
 
