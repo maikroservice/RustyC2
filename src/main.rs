@@ -23,10 +23,12 @@ impl fmt::Display for Piglet {
 fn handle_connection(mut stream: TcpStream) -> String {
     let mut buffer = [0; 1024];
     stream.read(&mut buffer).unwrap();
-    String::from_utf8_lossy(&buffer[..])
+    let message = String::from_utf8_lossy(&buffer[..])
         .to_string()
         .trim_matches(char::from(0))
-        .to_string()
+        .to_string();
+    println!("{message}");
+    message
 }
 
 fn main() {
@@ -47,7 +49,6 @@ fn main() {
     for stream in listener.incoming() {
         let stream = stream.unwrap();
         let message = handle_connection(stream);
-        let message_fix = message.unwrap().
         //println!("{:?}", message);
 
         // next steps:
@@ -58,9 +59,11 @@ fn main() {
         println!("Connection established!");
 
         // make this dynamic -> how?!
-        Command::new(&message_fix)
-            .spawn()
-            .expect("`message` command failed to start");
+        Command::new("sh")
+            .arg("-c")
+            .arg(&message)
+            .status()
+            .expect("hello test");
 
         // send the result back to the "asker"
         // next -> task queue
