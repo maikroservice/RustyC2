@@ -63,7 +63,7 @@ fn main() {
             .arg("-c")
             .arg(&message)
             .status()
-            .expect("hello test");
+            .expect("command execution failed");
 
         // send the result back to the "asker"
         // next -> task queue
