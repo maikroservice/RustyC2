@@ -11,3 +11,4 @@ name = "rustyc2"
 path = "src/main.rs"
 
 [dependencies]
+uuid = { version = "0.8", features = ["v4"] }
