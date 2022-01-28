@@ -31,7 +31,7 @@ fn run_cmd_sh(piglet: &Piglet) -> Vec<u8> {
         .expect("command execution failed");
 
     /*
-    once we receive a Kommando we want to push it to the tasklist of the piglet
+    once we received a Kommando we want to push it to the tasklist of the piglet
     when we have the result/output we want to update the TaskStatus to "completed"
     */
     result.stdout
@@ -64,7 +64,5 @@ fn main() {
         // handle the stream and extract "Kommando"
         // how do we extract the body from the requests?
         // do we want to use raw HTTP requests or TCP Traffic?
-
-        // next -> task queue
     }
 }

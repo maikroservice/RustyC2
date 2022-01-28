@@ -3,8 +3,8 @@ use std::fmt;
 
 pub struct Piglet {
     pub id: uuid::Uuid,
-    pub bind_port: u16,
     pub call_home_addr: String,
+    pub bind_port: u16,
     pub tasklist: tasks::Tasklist,
 }
 
@@ -16,8 +16,8 @@ impl Default for Piglet {
 
         Piglet {
             id: uid,
-            bind_port: 8080,
             call_home_addr: "127.0.0.1".to_string(),
+            bind_port: 8080,
             tasklist: tasks::Tasklist::default(),
         }
     }
@@ -27,8 +27,8 @@ impl fmt::Display for Piglet {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "{} {} {} {:?}",
-            self.id, self.bind_port, self.call_home_addr, self.tasklist.tasks
+            "{} http://{}:{} {:?}",
+            self.id, self.call_home_addr, self.bind_port, self.tasklist.tasks
         )
     }
 }
