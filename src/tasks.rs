@@ -8,7 +8,8 @@ pub struct Tasklist {
 pub enum TaskStatus {
     Waiting,
     Running,
-    Finished,
+    Completed,
+    Failed,
 }
 
 // a single Task
@@ -32,13 +33,23 @@ impl Default for Task {
     }
 }
 
+/* in a tasklist you have different Kommandos as tasks
+ a task can have 3 different statuses -> waiting, running, finished
+ find the first waiting task in order to trigger it
+ we have a Vec of Tasks and we want to iterate through them to find one that is waiting
+*/
 impl Tasklist {
     fn find_first_waiting_task_index(self) -> i32 {
-        for (i, item) in self.tasks.iter().enumerate() {
-            match item.status {
-                Waiting => i.try_into().unwrap(),
-                _ => -1,
+        for (i, task) in self.tasks.iter().enumerate() {
+            match task.status {
+                TaskStatus::Waiting => return i as i32,
+                _ => continue,
             }
         }
+        return -1;
+    }
+
+    fn feed_the_bacon() {
+        todo!();
     }
 }

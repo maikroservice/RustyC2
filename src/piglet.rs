@@ -5,7 +5,7 @@ pub struct Piglet {
     pub id: uuid::Uuid,
     pub bind_port: u16,
     pub call_home_addr: String,
-    pub tasks: tasks::Tasklist,
+    pub tasklist: tasks::Tasklist,
 }
 
 // this generates default values for the Piglet Struct ->
@@ -18,23 +18,27 @@ impl Default for Piglet {
             id: uid,
             bind_port: 8080,
             call_home_addr: "127.0.0.1".to_string(),
-            tasks: tasks::Tasklist::default(),
+            tasklist: tasks::Tasklist::default(),
         }
     }
 }
 
 impl fmt::Display for Piglet {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} {} {}", self.id, self.bind_port, self.call_home_addr)
+        write!(
+            f,
+            "{} {} {} {:?}",
+            self.id, self.bind_port, self.call_home_addr, self.tasklist.tasks
+        )
     }
 }
 
 impl Piglet {
-    pub fn add_task(mut self, cmd: &str) {
+    pub fn add_task(&mut self, cmd: String) {
         let task = tasks::Task {
             command: cmd.to_string(),
             ..Default::default()
         };
-        self.tasks.tasks.push(task)
+        self.tasklist.tasks.push(task)
     }
 }
