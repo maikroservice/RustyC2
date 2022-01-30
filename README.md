@@ -34,3 +34,4 @@ notes: [Notion](https://maikroservice.notion.site/RustyC2-Write-y-our-own-C2-Fra
 - A [blog](https://harrison-technology.net/learning-rust-by-creating-a-basic-c2/) post by [Michael Harrison](https://harrison-technology.net/)
 - Shogun lab's [posts](https://shogunlab.gitbook.io/building-c2-implants-in-cpp-a-primer/) about C++ C2 Development
 - [ippsec's](https://ippsec.rocks) [youtube video](https://www.youtube.com/watch?v=FiT7-zxQGbo) on C2 implant development and the [video](https://www.youtube.com/watch?v=6l4ZIKwzW8U) on building empire modules
+- [WhiteHat Hacking's](https://www.youtube.com/channel/UC2JICTAVKyfXI4g9zITJ7tw) [videos](https://www.youtube.com/playlist?list=PLwVUVslZT0K1qX67U_bFsf6puBrnEWhMa) on Rust Malware Development
